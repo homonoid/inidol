@@ -55,7 +55,7 @@ class INIHash < BabelBridge::Parser
   end
 
   rule :values, any(:array, :types)
-  rule :types, any(:string, :content, :int, :bool)
+  rule :types, any(:int, :bool, :string, :content)
 
   rule :int,/[-]?[0-9]+/ do
     def evaluate
@@ -75,7 +75,7 @@ class INIHash < BabelBridge::Parser
     end
   end
 
-  rule :content, /[^\n\=\[\];#,]+/ do
+  rule :content, /[^\n\=\[\]";#,]+/ do
     def evaluate
       to_s.chomp
     end 
@@ -109,7 +109,15 @@ end
 class String
   def from_ini
     parser = INIHash.new
-    parser.parse(self).evaluate
-    parser.result
+    result = parser.parse(self)
+    line, column = BabelBridge::Tools.line_column(self, parser.failure_index)
+
+    if result
+      result.evaluate
+      parser.result
+    else
+      error_line = self.split(/\n+/)[line - 1]
+      puts "(\e[31m\e[1mSyntax\e[21m Failure\e[39m) on line #{line - 1} and column #{column}..."
+    end
   end
 end

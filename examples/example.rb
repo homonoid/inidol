@@ -1,4 +1,4 @@
-require 'inidol'
+require '../lib/inidol'
 
 previous = {
   person: {
