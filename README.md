@@ -45,14 +45,19 @@ require 'inidol'
 require 'pp'
 
 settings = <<-END
-	[global]
-	name=Bounce
-	author=homonoid
-	version=~1.0.0
+	[numbers]
+	digits = 12 # will be transformed into number
+	version = 1.0.0 # will be transformed into string
+	float = 3.14 # will be transformed into float
 
-	[settings]
-	graphics=low
-	shadows=false
+	[strings]
+	simple = "Hello, World!" # followed with quotes
+	also = Hello, World! # or without quotes
+
+	[arrays]
+	constants[] = 3.14
+	constants[] = 2.71
+	constants[] = 1.45
 END
 
 pp settings.from_ini
@@ -60,17 +65,21 @@ pp settings.from_ini
 outputs following Hash:
 
 ```ruby
-	{
-		:global => {
-			:name => "Bounce", 
-			:author => "homonoid", 
-			:version => "~1.0.0"
-		},
-		:settings => {
-			:graphics => "low", 
-			:shadows => false
-		}
+{
+	:numbers => {
+		:digits => 12,
+		:version => "1.0.0",
+		:float => 3.14
+	},
+	:strings => {
+		:simple => "Hello, World!",
+		:also => "Hello, World!"
+	},
+	:arrays => {
+		:constants => [3.14, 2.71, 1.45]
 	}
+}
+
 ```
 
 
