@@ -86,5 +86,3 @@ outputs following Hash:
 
 ### Bugs
 * Inserts newline at start of INI. May be fixed using `[1..-1]`.
-
- *Use at your own risk.* 
