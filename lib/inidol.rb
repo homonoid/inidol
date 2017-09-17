@@ -47,20 +47,43 @@ class INIHash < BabelBridge::Parser
     end
   end
 
-  rule :property, :name, '=', :values, :comment? do
+  rule :property, :names, '=', :types, :comment? do
     def evaluate
-      value = values.evaluate
-      parser.current?[name.evaluate] = value.size <= 1 ? value[0] : value
+      current = parser.current?[names.evaluate]
+
+      if current.instance_of?(Array)
+        current << types.evaluate
+      else
+        parser.current?[names.evaluate] = types.evaluate  
+      end
     end
   end
 
-  rule :values, any(:array, :types)
-  rule :types, any(:int, :bool, :string, :content)
+  rule :names, any(:array, :name)
+  rule :types, any(:float, :int, :bool, :string, :content)
 
   rule :int,/[-]?[0-9]+/ do
     def evaluate
       to_s.to_i
     end 
+  end
+
+  rule :dot_digits, many(/\.[0-9]+/) do
+    def evaluate
+      to_s.split(".")[1..-1]
+    end
+  end
+
+  rule :float, :int, :dot_digits do
+    def evaluate 
+      after_dot = dot_digits.evaluate
+
+      if after_dot.size <= 1
+        (int.evaluate.to_s + "." + after_dot[0]).to_f
+      else
+        int.evaluate.to_s + "." + after_dot.join('.')
+      end
+    end
   end
 
   rule :bool, /true|false/ do
@@ -75,15 +98,16 @@ class INIHash < BabelBridge::Parser
     end
   end
 
-  rule :content, /[^\n\=\[\]";#,]+/ do
+  rule :content, /[^\n\=\[\]";#]+/ do
     def evaluate
-      to_s.chomp
+      to_s.chomp.strip
     end 
   end
 
-  rule :array, many(:types, ',') do
+  rule :array, :name, '[]' do
     def evaluate
-      types.map { |value| value.evaluate }
+      parser.current?[name.evaluate] = [] if not parser.current?[name.evaluate].instance_of?(Array)
+      name.evaluate.to_sym
     end
   end
 

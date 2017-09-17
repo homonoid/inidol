@@ -1,18 +1,20 @@
-require '../lib/inidol'
+require_relative '../lib/inidol'
+require 'pp'
 
-previous = {
-  person: {
-    first_name: "Bob",
-    last_name: "Wares",
-    age: 50
-  }
-}.to_ini # convert these data to INI string
+example = '''
+  [numbers]
+  digits = 12 # will be transformed into number
+  version = 1.0.0 # will be transformed into string
+  float = 3.14 # will be transformed into float
 
-puts previous # puts it
+  [strings]
+  simple = "Hello, World!" # followed with quotes
+  also = Hello, World! # or without quotes
 
-puts "\n===="
+  [arrays]
+  constants[] = 3.14
+  constants[] = 2.71
+  constants[] = 1.45
+'''.from_ini # convert given example INI string to hash
 
-second = previous.from_ini # convert back to Hash
-second[:person][:first_name] = "Tom" # set name of person to Tom
-second[:person][:age] = 30 # set age of person to 30
-puts second.to_ini # also back convert to INI string, puts it!
+pp example # and output it with pp formatting

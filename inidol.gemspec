@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name = 'inidol'
-  s.version = '1.1.1'
-  s.date = '2017-09-16'
+  s.version = '1.1.2'
+  s.date = '2017-09-17'
   s.description = 'Inidol is for Hash -> INI and back converting'
   s.summary = 'Inidol'
   s.authors = ['homonoid']
